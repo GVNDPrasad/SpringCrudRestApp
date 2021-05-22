@@ -5,6 +5,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -32,14 +34,18 @@ public class CustomersController {
 	}
 
 	@PostMapping("/save")
-	public String save(@RequestBody Customers cusObj) {
+	public ResponseEntity<String> save(@RequestBody Customers cusObj) {
+		
         log.info("Started Controller :: CustomersController :: save()");
 		
+        ResponseEntity<String> resp = null;
 		Customers cus = cusService.save(cusObj);
-		String msg = "Hi"+cus.getFname()+"Successfully created your account";
-		
+		//String msg = "Hi"+cus.getFname()+"Successfully created your account";
+		//resp = new ResponseEntity<String>("Hi"+cus.getFname()+"Successfully created your account",HttpStatus.OK);
+		resp = ResponseEntity.ok("Hi"+cus.getFname()+"Successfully created your account");
 		log.info("Ended Controller :: CustomersController :: save()");
-		return "GVP APP";
+		
+		return resp;
 
 	}
 	
