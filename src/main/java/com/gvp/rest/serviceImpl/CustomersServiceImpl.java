@@ -40,10 +40,11 @@ public class CustomersServiceImpl implements CustomersService {
 	}
 
 	@Override
-	public void delete(Integer cid) {
+	public Integer delete(Integer cid) {
 		log.info("Started ServiceImpl :: CustomersServiceImpl :: delete()");
 		cusDao.deleteById(cid);;
 		log.info("Ended ServiceImpl :: CustomersServiceImpl :: delete()");
+		return cid;
 	}
 
 	@Override

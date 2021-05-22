@@ -14,7 +14,7 @@ public interface CustomersService {
 	public Customers update(Integer cid);
 	
 	//Delete
-	public void delete(Integer cid);
+	public Integer delete(Integer cid);
 	
 	//List of customers
 	public List<Customers> listAllCustomers();

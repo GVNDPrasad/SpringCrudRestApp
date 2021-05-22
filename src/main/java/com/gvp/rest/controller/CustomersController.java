@@ -10,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,6 +30,8 @@ public class CustomersController {
 	@Autowired
 	private CustomersService cusService;
 	
+	ResponseEntity<String> resp = null;
+	
 	@GetMapping("/test")
 	private String appTest() {
 		return "Ur test is success";
@@ -37,10 +41,8 @@ public class CustomersController {
 	public ResponseEntity<String> save(@RequestBody Customers cusObj) {
 		
         log.info("Started Controller :: CustomersController :: save()");
-		
-        ResponseEntity<String> resp = null;
-		Customers cus = cusService.save(cusObj);
-		//String msg = "Hi"+cus.getFname()+"Successfully created your account";
+		System.out.println("id: "+cusObj.getCusId());
+        Customers cus = cusService.save(cusObj);
 		//resp = new ResponseEntity<String>("Hi"+cus.getFname()+"Successfully created your account",HttpStatus.OK);
 		resp = ResponseEntity.ok("Hi"+cus.getFname()+"Successfully created your account");
 		log.info("Ended Controller :: CustomersController :: save()");
@@ -49,33 +51,51 @@ public class CustomersController {
 
 	}
 	
-	@RequestMapping("/delete")
-	public String delete(@RequestParam("cid") Integer cid, Model model) {
+//	@PostMapping("/update/{id}")
+//	public ResponseEntity<String> update(@PathVariable("id") Integer id, @PathVariable("name") String name) {
+//		
+//        log.info("Started Controller :: CustomersController :: save()");
+//		
+//        Customers cus = cusService.save(cusObj);
+//		//resp = new ResponseEntity<String>("Hi"+cus.getFname()+"Successfully created your account",HttpStatus.OK);
+//		resp = ResponseEntity.ok("Hi"+cus.getFname()+"Successfully created your account");
+//		log.info("Ended Controller :: CustomersController :: save()");
+//		
+//		return resp;
+//
+//	}
+	
+	@RequestMapping("/delete/{cid}")
+	public ResponseEntity<String> delete(@PathVariable Integer cid) {
 	   log.info("Started Controller :: CustomersController :: delete()");
-	   cusService.delete(cid);
-	   model.addAttribute("msg", "Deleted Successfull !");
-		
+	   Integer cusID = cusService.delete(cid);
+	   resp = new ResponseEntity<String>(cusID+" Deleted customer successfully",HttpStatus.ACCEPTED);
 	   log.info("Ended Controller :: CustomersController :: delete()");
-	   return "GVP APP";	
+	   return resp;	
 	}
 	
 	
 	@GetMapping("/list")
-	public String listAllCustomers(Model model) {
+	public ResponseEntity<List<Customers>> listAllCustomers() {
 		log.info("Started Controller :: CustomersController :: listAllCustomers()");
+		
+		ResponseEntity<List<Customers>> respAll = null;
 		List<Customers> custList = cusService.listAllCustomers();
-		model.addAttribute("allCustomersList", custList);
+		respAll = new ResponseEntity<List<Customers>>((List<Customers>) custList,HttpStatus.OK);
+		
 		log.info("Ended Controller :: CustomersController :: listAllCustomers()");
-		return "GVP APP";		
+		return respAll;		
 	}
 	
-	@RequestMapping("/edit")
-	public String update(@RequestParam("cid") Integer cid, Model model) {
+	@PutMapping("/edit/{cid}")
+	public ResponseEntity<String> update(@PathVariable Integer cid) {
 		log.info("Started Controller :: CustomersController :: update()"+cid);
+		
 		Customers customer = cusService.update(cid);
+		resp = new ResponseEntity<String>(customer.getUname()+" data has updated successfully",HttpStatus.OK);
+		
 		log.info("Started Controller :: CustomersController :: update()"+customer);
-		model.addAttribute("customer", customer);
-		return "GVP APP";
+		return resp;
 	}
 	
 	
