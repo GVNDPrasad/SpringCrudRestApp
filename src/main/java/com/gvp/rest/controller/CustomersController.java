@@ -1,6 +1,7 @@
 package com.gvp.rest.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -65,7 +67,7 @@ public class CustomersController {
 //
 //	}
 	
-	@RequestMapping("/delete/{cid}")
+	@DeleteMapping("/delete/{cid}")
 	public ResponseEntity<String> delete(@PathVariable Integer cid) {
 	   log.info("Started Controller :: CustomersController :: delete()");
 	   Integer cusID = cusService.delete(cid);
@@ -87,15 +89,21 @@ public class CustomersController {
 		return respAll;		
 	}
 	
-	@PutMapping("/edit/{cid}")
-	public ResponseEntity<String> update(@PathVariable Integer cid) {
-		log.info("Started Controller :: CustomersController :: update()"+cid);
-		
-		Customers customer = cusService.update(cid);
-		resp = new ResponseEntity<String>(customer.getUname()+" data has updated successfully",HttpStatus.OK);
-		
-		log.info("Started Controller :: CustomersController :: update()"+customer);
+	@PutMapping("/update/{cid}")
+	public ResponseEntity<String> update(@PathVariable Integer cid,@RequestBody Customers cusObj) {
+		log.info("Started Controller :: CustomersController :: update()");
+		cusService.update(cid,cusObj);
+		resp = new ResponseEntity<String>("Updated Successfully",HttpStatus.ACCEPTED);
 		return resp;
+	}
+	
+	@GetMapping("/getCustomer/{cid}")
+	public ResponseEntity<Optional<Customers>> getCustomer(@PathVariable Integer cid){
+		ResponseEntity<Optional<Customers>> resp1 = null;
+		Optional<Customers> c = cusService.getCust(cid);
+		System.out.println("Get Customer:"+c);
+		resp1 = new ResponseEntity<Optional<Customers>>(c,HttpStatus.ACCEPTED);
+		return resp1;
 	}
 	
 	

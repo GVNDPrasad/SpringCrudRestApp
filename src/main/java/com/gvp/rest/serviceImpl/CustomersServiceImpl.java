@@ -1,6 +1,7 @@
 package com.gvp.rest.serviceImpl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,12 +48,38 @@ public class CustomersServiceImpl implements CustomersService {
 		return cid;
 	}
 
-	@Override
-	public Customers update(Integer cid) {
+	
+    @Override
+	public Customers get(Integer cid) {
 		log.info("Started ServiceImpl :: CustomersServiceImpl :: update()"+cid);
 		Customers customer = cusDao.findById(cid).get();
 		log.info("Ended ServiceImpl :: CustomersServiceImpl :: update()"+customer);
 		return customer;
+	}
+
+	@Override
+	public void update(Integer cid,Customers cusObj) {
+		log.info("Started ServiceImpl :: CustomersServiceImpl :: update()");
+		Customers c = new Customers();
+		c.setCusId(cid);
+		c.setFname(cusObj.getFname());
+		c.setLname(cusObj.getLname());
+		c.setUname(cusObj.getUname());
+		c.setPassword(cusObj.getPassword());
+		c.setEmail(cusObj.getEmail());
+		c.setPhone(cusObj.getPhone());
+		c.setAddress(cusObj.getAddress());
+		cusDao.save(c);
+		
+		log.info("Ended ServiceImpl :: CustomersServiceImpl :: update()"+c);
+	}
+
+	@Override
+	public Optional<Customers> getCust(Integer cid) {
+		log.info("Started ServiceImpl :: CustomersServiceImpl :: getCust()");
+		Optional<Customers> cusObj = cusDao.findById(cid);
+		log.info("Ended ServiceImpl :: CustomersServiceImpl :: getCust()"+cusObj);
+		return cusObj;
 	}
 
 }
